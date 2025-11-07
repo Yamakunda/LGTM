@@ -1,0 +1,54 @@
+loki:
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+        chunks:
+          period: 24h
+  auth_enabled: false
+  storage:
+    type: s3
+    bucketNames:
+      chunks: loki-chunks
+      ruler: loki-ruler
+    s3:
+      endpoint: http://minio-service.monitoring.svc.cluster.local:9000
+      secretAccessKey: 3mgDFTLkECsdHjOj66J8qnehUBZQOZK7UyeH8Gtq
+      accessKeyId: JJ8bS9uM6KC85sgrmhlM
+      insecure: true
+      s3ForcePathStyle: true
+  deploymentMode: SimpleScalable
+  chunksCache:
+    enabled: true
+    replicas: 1
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+      limits:
+        cpu: 200m
+        memory: 200Mi
+  read:
+    persistence:
+      storageClass: standard
+  write:
+    persistence:
+      storageClass: standard
+  backend:
+    persistence:
+      storageClass: standard
+  minio:
+    enabled: true
+  gateway:
+    service:
+      type: ClusterIP
+
