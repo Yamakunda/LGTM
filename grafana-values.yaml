@@ -150,6 +150,9 @@ securityContext:
   runAsUser: 472
   runAsGroup: 472
   fsGroup: 472
+ #  runAsUser: 0
+ #  runAsGroup: 0
+ #  fsGroup: 0
 
 containerSecurityContext:
   allowPrivilegeEscalation: false
@@ -278,10 +281,10 @@ hostAliases: []
   #     - "my.host.com"
 
 ingress:
-  enabled: false
+  enabled: true
   # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
   # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
-  # ingressClassName: nginx
+  ingressClassName: nginx
   # Values can be templated
   annotations: {}
     # kubernetes.io/ingress.class: nginx
@@ -293,7 +296,7 @@ ingress:
   pathType: Prefix
 
   hosts:
-    - chart-example.local
+    - grafana.local.com
   ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
   extraPaths: []
   # - path: /*
@@ -421,7 +424,7 @@ persistence:
   volumeName: ""
   accessModes:
     - ReadWriteOnce
-  size: 4Gi
+  size: 2Gi
   # annotations: {}
   finalizers:
     - kubernetes.io/pvc-protection
@@ -489,7 +492,7 @@ initChownData:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-# adminPassword: strongpassword
+adminPassword: admin
 
 # Use an existing secret for the admin user.
 admin:
@@ -502,6 +505,12 @@ admin:
 ## Needed if using `vault-env` to manage secrets (ref: https://banzaicloud.com/blog/inject-secrets-into-pods-vault/)
 ## Default is "run.sh" as defined in grafana's Dockerfile
 # command:
+# - "sh"
+# - "/run.sh"
+# command:
+# - "setcap"
+# - "'cap_net_bind_service=+ep'"
+# - "/usr/sbin/grafana-server &&"
 # - "sh"
 # - "/run.sh"
 
@@ -670,6 +679,7 @@ datasources:
         access: proxy
         url: http://loki-gateway.monitoring.svc.cluster.local:80
         isDefault: true
+
 #  datasources.yaml:
 #    apiVersion: 1
 #    datasources:

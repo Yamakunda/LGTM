@@ -1,4 +1,6 @@
 loki:
+  commonConfig:
+    replication_factor: 1
   schemaConfig:
     configs:
       - from: 2024-04-01
@@ -22,7 +24,6 @@ loki:
       accessKeyId: JJ8bS9uM6KC85sgrmhlM
       insecure: true
       s3ForcePathStyle: true
-  deploymentMode: SimpleScalable
   chunksCache:
     enabled: true
     replicas: 1
@@ -36,19 +37,65 @@ loki:
         memory: 200Mi
       limits:
         cpu: 200m
-        memory: 200Mi
-  read:
-    persistence:
-      storageClass: standard
-  write:
-    persistence:
-      storageClass: standard
-  backend:
-    persistence:
-      storageClass: standard
-  minio:
-    enabled: true
-  gateway:
+        memory: 200M
+deploymentMode: SingleBinary
+singleBinary:
+  replicas: 1
+read:
+  replicas: 0
+  persistence:
+    storageClass: standard
+  resources:
+    requests:
+      cpu: 200m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 100Mi
+write:
+  replicas: 0
+  persistence:
+    storageClass: standard
+  resources:
+    requests:
+      cpu: 200m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 100Mi
+
+backend:
+  replicas: 0
+  persistence:
+    storageClass: standard
+  resources:
+    requests:
+      cpu: 200m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 100Mi
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
+minio:
+  enabled: true
+gateway:
     service:
       type: ClusterIP
 
